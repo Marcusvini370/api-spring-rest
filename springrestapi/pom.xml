@@ -11,7 +11,7 @@
 	<groupId>com.br</groupId>
 	<artifactId>springrestapi</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>springrestapi</name>
 	<description>API Rest Spring Boot</description>
 	<properties>
