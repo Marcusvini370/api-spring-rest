@@ -10,6 +10,8 @@ import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.ForeignKey;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,8 +29,9 @@ public class Telefone implements Serializable{
 	private String numero;
 	private String tipo;
 	
+	@JsonIgnore // para não ficar repetindo o processo json várias vezes
 	@ForeignKey(name ="usuario_id")
-	@ManyToOne
+	@ManyToOne(optional = false)
 	private Usuario usuario;
 	
 	

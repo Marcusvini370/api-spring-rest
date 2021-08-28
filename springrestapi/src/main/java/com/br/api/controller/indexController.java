@@ -18,6 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.br.api.model.Usuario;
 import com.br.api.repository.UsuarioRepository;
 
+
+
+
 @RestController // Arquitetura REST
 @RequestMapping(value = "/usuario")
 public class indexController {
@@ -25,68 +28,58 @@ public class indexController {
 	@Autowired // se fosse CDI seria @Inject
 	private UsuarioRepository usuarioRepository;
 	
-	/*Serviço RESTfull */
-	@GetMapping(value = "/{id}/relatoriopdf  e",  produces = "application/pdf") // Lista usuário por id
-	public ResponseEntity<Usuario> relatorio(@PathVariable (value ="id") Long id) {
+	
+	
+	/* Serviço RESTfull */
+	@GetMapping(value = "/{id}", produces = "application/json") // Lista usuário por id
+	public ResponseEntity<Usuario> init(@PathVariable(value = "id") Long id) {
 
 		Optional<Usuario> usuario = usuarioRepository.findById(id);
-		
-			/* O retorno seria  uma relatório */
-			return  new ResponseEntity<Usuario>(usuario.get(), HttpStatus.OK);
-	}
-	
-	/*Serviço RESTfull */
-	@GetMapping(value = "/{id}",  produces = "application/json") // Lista usuário por id
-	public ResponseEntity<Usuario> init(@PathVariable (value ="id") Long id) {
 
-		Optional<Usuario> usuario = usuarioRepository.findById(id);
-		
-			return  new ResponseEntity<Usuario>(usuario.get(), HttpStatus.OK);
+		return new ResponseEntity<Usuario>(usuario.get(), HttpStatus.OK);
 	}
-	
-	@GetMapping(value = "/", produces = "application/json")
-	public ResponseEntity<List<Usuario>> usuario(){
-		
+
+	@GetMapping(value = "/")
+	public ResponseEntity<List<Usuario>> usuario() {
+
 		List<Usuario> list = (List<Usuario>) usuarioRepository.findAll();
 		return new ResponseEntity<List<Usuario>>(list, HttpStatus.OK);
 	}
-	
-	@PostMapping(value = "/", produces ="application/json")
-	public ResponseEntity<Usuario> cadastrar(@RequestBody Usuario usuario){
+
+	@PostMapping(value = "/")
+	public ResponseEntity<Usuario> cadastrar(@RequestBody Usuario usuario) {
 		
+		for(int pos = 0; pos < usuario.getTelefones().size(); pos ++ ) {
+			usuario.getTelefones().get(pos).setUsuario(usuario); // vai amarrar os telefones aos usuários pertencentes
+		}
+
 		Usuario usuarioSalvo = usuarioRepository.save(usuario);
-		
+
 		return new ResponseEntity<Usuario>(usuarioSalvo, HttpStatus.OK);
 	}
-	
-	@PostMapping(value = "/{iduser}/idvenda/{idvenda}", produces ="application/json")
-	public ResponseEntity<Usuario> cadastrarvenda(@PathVariable Long iduser,
-			@PathVariable Long idvenda){
-		
-		//Aqui seria o processo de venda
-		//Usuario usuarioSalvo = usuarioRepository.save(usuario);
-		
-		return new ResponseEntity("Id user : " + iduser + " idvenda : " + idvenda, HttpStatus.OK);
-	}
-	
-	
+
 	@PutMapping(value = "/")
-	public ResponseEntity<Usuario> atualizar(@RequestBody Usuario usuario){
-		
+	public ResponseEntity<Usuario> atualizar(@RequestBody Usuario usuario) {
+
 		/* Outras rotinas antes de atualizar */
 		
+
+		for(int pos = 0; pos < usuario.getTelefones().size(); pos ++ ) {
+			usuario.getTelefones().get(pos).setUsuario(usuario); // vai amarrar os telefones aos usuários pertencentes
+		}
+
 		Usuario usuarioSalvo = usuarioRepository.save(usuario);
-		
+
 		return new ResponseEntity<Usuario>(usuarioSalvo, HttpStatus.OK);
 	}
-	
-	@DeleteMapping(value = "/{id}", produces = "application/text")
-	public ResponseEntity<Void> delete(@PathVariable ("id") Long id) {
-		
+
+	@DeleteMapping(value = "/{id}")
+	public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
+
 		usuarioRepository.deleteById(id);
-		
+
 		return ResponseEntity.noContent().build();
-		
+
 	}
 	
 	
