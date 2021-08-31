@@ -1,5 +1,6 @@
 package com.br.api.security;
 
+import java.io.IOException;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +20,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 @Service
 @Component
-public class JWTTockenAutenticacaoService {
+public class JWTTokenAutenticacaoService {
 	
 	/* Tempo  de Validade do Token 2 dias milissegundos*/
 	private static final long EXPIRATION_TIME = 172800000;
@@ -33,7 +34,7 @@ public class JWTTockenAutenticacaoService {
 	private static final String HEADER_STRING =  "Authorization";
 	
 	/* Gerando token de autenticado e adicionando ao cabeçalho e reposta Http */
-	public void addAuthentication(HttpServletResponse response, String username) throws Exception {
+	public void addAuthentication(HttpServletResponse response, String username) throws IOException {
 		
 		/* Montagem do Token */
 		String JWT = Jwts.builder() /*Chama o Gerador de Token */
