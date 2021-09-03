@@ -42,7 +42,7 @@ public class JWTTokenAutenticacaoService {
 				.setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME)) /* Tempo de expiração */
 				.signWith(SignatureAlgorithm.HS512, SECRET).compact(); /* Compactação e algoritmo de geração de senha */
 		
-		String token = TOKEN_PREFIX + "" +  JWT; /* vai juntar o prefixo com o jwt e gerar o token*/
+		String token = TOKEN_PREFIX + " " +  JWT; /* vai juntar o prefixo com o jwt e gerar o token*/
 		
 		/* Adiciona no cabeçalho http */
 		response.addHeader(HEADER_STRING, token); /* Authorization : Bearer w87ew87e8w7e8w7e8w7e8w7e8 */
