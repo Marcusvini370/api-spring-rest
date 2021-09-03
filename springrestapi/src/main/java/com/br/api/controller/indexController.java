@@ -33,13 +33,14 @@ public class indexController {
 	
 	/* Serviço RESTfull */
 	@GetMapping(value = "/{id}", produces = "application/json") // Lista usuário por id
-	public ResponseEntity<Usuario> init(@PathVariable(value = "id") Long id) {
+	public ResponseEntity<Usuario> initV1(@PathVariable(value = "id") Long id) {
 
 		Optional<Usuario> usuario = usuarioRepository.findById(id);
-
 		return new ResponseEntity<Usuario>(usuario.get(), HttpStatus.OK);
 	}
+	
 
+	/* Vamos supor que o carregamento de  */
 	@GetMapping(value = "/")
 	public ResponseEntity<List<Usuario>> usuario() {
 
@@ -66,14 +67,24 @@ public class indexController {
 
 		/* Outras rotinas antes de atualizar */
 		
-
-		for(int pos = 0; pos < usuario.getTelefones().size(); pos ++ ) {
-			usuario.getTelefones().get(pos).setUsuario(usuario); // vai amarrar os telefones aos usuários pertencentes
+		
+		for(int pos = 0; pos < usuario.getTelefones().size(); pos++) {
+	     	   usuario.getTelefones().get(pos).setUsuario(usuario); 
+	        }
+		
+		Usuario userTemporario = usuarioRepository.findUserByLogin(usuario.getLogin());
+		
+		//senhas diferente
+		if(!userTemporario.getPassword().equals(usuario.getPassword())) {
+			//se for diferente vai criptografar a senha nova do usuario
+			String senhaCriptografada = new BCryptPasswordEncoder().encode(usuario.getSenha());
+			usuario.setSenha(senhaCriptografada);
 		}
 
-		Usuario usuarioSalvo = usuarioRepository.save(usuario);
+		Usuario UsuarioAtualizar= usuarioRepository.save(usuario);
 
-		return new ResponseEntity<Usuario>(usuarioSalvo, HttpStatus.OK);
+		return 	ResponseEntity.ok(UsuarioAtualizar);
+		//ou return new ResponseEntity<Usuario>(Usuariosalvo, HttpStatus.OK);
 	}
 
 	@DeleteMapping(value = "/{id}")
