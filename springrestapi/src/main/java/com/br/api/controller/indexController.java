@@ -36,8 +36,8 @@ public class indexController {
 	
 	/* Serviço RESTfull */
 	@GetMapping(value = "/{id}", produces = "application/json") // Lista usuário por id
-	@CacheEvict(value = "cacheusuarios" , allEntries = true)  // se tiver cache que não é usado vai remover
-	@CachePut // se tem mudanças ou dados novos no banco, vai trazer para o cache
+	@CacheEvict(value = "cacheuser" , allEntries = true)  // se tiver cache que não é usado vai remover
+	@CachePut(value = "cacheputuser") // se tem mudanças ou dados novos no banco, vai trazer para o cache
 	public ResponseEntity<Usuario> initV1(@PathVariable(value = "id") Long id) {
 
 		Optional<Usuario> usuario = usuarioRepository.findById(id);
@@ -49,13 +49,11 @@ public class indexController {
 	  queremos controlar ele com cache para agilizar o processo  */
 	@GetMapping(value = "/")
 	@CacheEvict(value = "cacheusuarios" , allEntries = true)  // se tiver cache que não é usado vai remover
-	@CachePut // se tem mudanças ou dados novos no banco, vai trazer para o cache
+	@CachePut(value = "cacheputusuarios") // se tem mudanças ou dados novos no banco, vai trazer para o cache
 	public ResponseEntity<List<Usuario>> usuario() throws InterruptedException {
 
 		List<Usuario> list = (List<Usuario>) usuarioRepository.findAll();
-		
-		Thread.sleep(6000); /* Segura o código por 6 segundos simulando um processo lento*/
-		
+			
 		return new ResponseEntity<List<Usuario>>(list, HttpStatus.OK);
 	}
 

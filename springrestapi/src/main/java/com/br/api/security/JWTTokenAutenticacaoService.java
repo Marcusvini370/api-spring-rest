@@ -60,9 +60,11 @@ public class JWTTokenAutenticacaoService {
 		String token = request.getHeader(HEADER_STRING);
 
 		if (token != null) {
+			
+			String tokenLimpo = token.replace(TOKEN_PREFIX, "").trim();
 
 			/* Faz a validação do token do usuário na requisição */
-			String user = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token.replace(TOKEN_PREFIX, "")).getBody()
+			String user = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(tokenLimpo).getBody()
 					.getSubject(); /* usuário */
 
 			if (user != null) {
@@ -70,8 +72,14 @@ public class JWTTokenAutenticacaoService {
 						.findUserByLogin(user);
 
 				if (usuario != null) {
-					return new UsernamePasswordAuthenticationToken(usuario.getLogin(), usuario.getSenha(),
+					
+					if(tokenLimpo.equalsIgnoreCase(usuario.getToken())) { // se o token do usuário que veio por requisição for igual ao do bd será validado
+					
+					return new UsernamePasswordAuthenticationToken(
+							usuario.getLogin(),
+							usuario.getSenha(),
 							usuario.getAuthorities());
+					}
 
 				}
 			}

@@ -61,6 +61,8 @@ public class Usuario implements UserDetails {
 	inverseJoinColumns = @JoinColumn (name = "role_id", referencedColumnName = "id", table = "role", unique = false, updatable =false,
 	foreignKey = @ForeignKey (name = "role_fk",value = ConstraintMode.CONSTRAINT )))
 	private List<Role> roles; /* Papeis ou acessos */ 
+	
+	private String token = "";
 
 	/* São os acessos do usuário com ROLE */
 	@Override 
