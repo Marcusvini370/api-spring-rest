@@ -54,10 +54,15 @@ public class JWTTokenAutenticacaoService {
 	/*
 	 * Retorna o usuário validado com token ou caso não seja validado retorna null
 	 */
-	public Authentication getAuthentication(HttpServletRequest request) {
+	public Authentication getAuthentication(HttpServletRequest request, HttpServletResponse response) {
 
 		/* Pega o token enviado no cabeçalho http */
 		String token = request.getHeader(HEADER_STRING);
+		
+		try {
+		
+		/* Liberando resposta para portas difetentes que usam api ou clientes web */
+		liberacaoCors(response);
 
 		if (token != null) {
 			
@@ -84,8 +89,39 @@ public class JWTTokenAutenticacaoService {
 				}
 			}
 
+		}/* Fim condição token */
+		
+		
+		}catch(io.jsonwebtoken.ExpiredJwtException e) {
+			try {
+				response.getOutputStream().println("Seu TOKEN está expirado, faça o login ou informe o novo Token para Autenticação");
+			} catch (IOException e1) {
+			}
 		}
+		
+		liberacaoCors(response);
 		return null;
+	}
+
+	private void liberacaoCors(HttpServletResponse response) {
+		
+		if(response.getHeader("Acess-Control-Allow-Origin") == null) {
+			response.addHeader("Acess-Control-Allow-Origin", "*");
+		}
+			
+			if(response.getHeader("Acess-Control-Allow-Headers") == null){
+				response.addHeader("Acess-Control-Allow-Headers", "*");
+		}
+			if(response.getHeader("Acess-Control-Request-Headers") == null){
+				response.addHeader("Acess-Control-Request-Headers", "*");
+		}
+			
+			if(response.getHeader("Acess-Control-Allow-Methods") == null) {
+				response.addHeader("Acess-Control-Allow-Methods", "*");
+			}
+			
+			
+		
 	}
 	
 
