@@ -50,6 +50,14 @@ public class Usuario implements UserDetails {
 	
 	private String cpf;
 	
+	private String cep;
+	private String logradouro;
+	private String complemento;
+	private String bairro;
+	private String localidade;
+	private String uf;
+	private String ddd;
+	
 	@OneToMany(mappedBy = "usuario", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<Telefone> telefones = new ArrayList<Telefone>();
 	

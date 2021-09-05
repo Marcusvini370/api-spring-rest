@@ -1,5 +1,11 @@
 package com.br.api.controller;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.br.api.model.Usuario;
 import com.br.api.model.UsuarioDTO;
 import com.br.api.repository.UsuarioRepository;
+import com.google.gson.Gson;
 
 
 
@@ -59,11 +66,39 @@ public class indexController {
 	}
 
 	@PostMapping(value = "/")
-	public ResponseEntity<Usuario> cadastrar(@RequestBody Usuario usuario) {
+	public ResponseEntity<Usuario> cadastrar(@RequestBody Usuario usuario) throws Exception {
 		
 		for(int pos = 0; pos < usuario.getTelefones().size(); pos ++ ) {
 			usuario.getTelefones().get(pos).setUsuario(usuario); // vai amarrar os telefones aos usuários pertencentes
 		}
+		
+		// Consumindo API publica externa do cep
+		
+		URL url  = new URL("https://viacep.com.br/ws/"+usuario.getCep()+"/json/");
+		URLConnection connection = url.openConnection();
+		InputStream is = connection.getInputStream();
+		BufferedReader br = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+		
+		String cep = "";
+		StringBuilder jsonCep = new StringBuilder();
+		
+		while((cep = br.readLine()) != null) {
+			jsonCep.append(cep);
+		}
+			
+			
+			Usuario userAux = new Gson().fromJson(jsonCep.toString(), Usuario.class);
+			
+			usuario.setCep(userAux.getCep());
+			usuario.setLogradouro(userAux.getLogradouro());
+			usuario.setComplemento(userAux.getComplemento());
+			usuario.setBairro(userAux.getBairro());
+			usuario.setLocalidade(userAux.getLocalidade());
+			usuario.setUf(userAux.getUf());
+			usuario.setDdd(userAux.getDdd());
+			
+		
+		// Consumindo API publica externa
 		
 		String senhacriptografada = new BCryptPasswordEncoder().encode(usuario.getSenha());
 		usuario.setSenha(senhacriptografada);
