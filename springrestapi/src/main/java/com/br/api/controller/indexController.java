@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.br.api.model.Usuario;
+import com.br.api.model.UsuarioDTO;
 import com.br.api.repository.UsuarioRepository;
 
 
@@ -35,13 +36,13 @@ public class indexController {
 	
 	
 	/* Serviço RESTfull */
-	@GetMapping(value = "/{id}", produces = "application/json") // Lista usuário por id
+	@GetMapping(value = "/{id}") // Lista usuário por id
 	@CacheEvict(value = "cacheuser" , allEntries = true)  // se tiver cache que não é usado vai remover
 	@CachePut(value = "cacheputuser") // se tem mudanças ou dados novos no banco, vai trazer para o cache
-	public ResponseEntity<Usuario> initV1(@PathVariable(value = "id") Long id) {
+	public ResponseEntity<UsuarioDTO> initV1(@PathVariable(value = "id") Long id) {
 
 		Optional<Usuario> usuario = usuarioRepository.findById(id);
-		return new ResponseEntity<Usuario>(usuario.get(), HttpStatus.OK);
+		return new ResponseEntity<UsuarioDTO>(new UsuarioDTO(usuario.get()), HttpStatus.OK);
 	}
 	
 

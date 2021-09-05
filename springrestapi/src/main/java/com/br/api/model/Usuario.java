@@ -44,10 +44,11 @@ public class Usuario implements UserDetails {
 	@Column(unique = true)
 	private String login;
 	
-
 	private String senha;
 	
 	private String nome;
+	
+	private String cpf;
 	
 	@OneToMany(mappedBy = "usuario", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<Telefone> telefones = new ArrayList<Telefone>();
@@ -105,5 +106,7 @@ public class Usuario implements UserDetails {
 	public boolean isEnabled() {
 		return true;
 	}
+
+
 
 }
