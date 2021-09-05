@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -33,6 +36,8 @@ public class indexController {
 	
 	/* Serviço RESTfull */
 	@GetMapping(value = "/{id}", produces = "application/json") // Lista usuário por id
+	@CacheEvict(value = "cacheusuarios" , allEntries = true)  // se tiver cache que não é usado vai remover
+	@CachePut // se tem mudanças ou dados novos no banco, vai trazer para o cache
 	public ResponseEntity<Usuario> initV1(@PathVariable(value = "id") Long id) {
 
 		Optional<Usuario> usuario = usuarioRepository.findById(id);
@@ -40,11 +45,17 @@ public class indexController {
 	}
 	
 
-	/* Vamos supor que o carregamento de  */
+	/* Vamos supor que o carregamento de usuário seja um processo lento e 
+	  queremos controlar ele com cache para agilizar o processo  */
 	@GetMapping(value = "/")
-	public ResponseEntity<List<Usuario>> usuario() {
+	@CacheEvict(value = "cacheusuarios" , allEntries = true)  // se tiver cache que não é usado vai remover
+	@CachePut // se tem mudanças ou dados novos no banco, vai trazer para o cache
+	public ResponseEntity<List<Usuario>> usuario() throws InterruptedException {
 
 		List<Usuario> list = (List<Usuario>) usuarioRepository.findAll();
+		
+		Thread.sleep(6000); /* Segura o código por 6 segundos simulando um processo lento*/
+		
 		return new ResponseEntity<List<Usuario>>(list, HttpStatus.OK);
 	}
 
