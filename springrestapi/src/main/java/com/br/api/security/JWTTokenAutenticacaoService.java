@@ -47,6 +47,10 @@ public class JWTTokenAutenticacaoService {
 		/* Adiciona no cabeçalho http */
 		response.addHeader(HEADER_STRING, token); /* Authorization : Bearer w87ew87e8w7e8w7e8w7e8w7e8 */
 		
+		/* Liberando resposta para porta diferente do projeto Angular */
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		
+		
 		ApplicationContextLoad.getApplicationContext()
 		.getBean(UsuarioRepository.class).atualizaTokenUser(JWT, username);
 		
