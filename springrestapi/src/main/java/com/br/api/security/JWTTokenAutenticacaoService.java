@@ -106,8 +106,12 @@ public class JWTTokenAutenticacaoService {
 			}
 		}
 		
+		
 		liberacaoCors(response);
-		return null;
+		
+		/* Liberando resposta para porta diferente do projeto Angular */
+		response.addHeader("Access-Control-Allow-Origin", "*");
+		return null; // acesso não autorizzado
 	}
 
 	private void liberacaoCors(HttpServletResponse response) {
