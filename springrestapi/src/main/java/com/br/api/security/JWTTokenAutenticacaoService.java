@@ -48,7 +48,10 @@ public class JWTTokenAutenticacaoService {
 		response.addHeader(HEADER_STRING, token); /* Authorization : Bearer w87ew87e8w7e8w7e8w7e8w7e8 */
 		
 		/* Liberando resposta para porta diferente do projeto Angular */
-		response.addHeader("Access-Control-Allow-Origin", "*");
+				liberarCors(response);
+		
+		
+		
 		
 		
 		ApplicationContextLoad.getApplicationContext()
@@ -69,7 +72,7 @@ public class JWTTokenAutenticacaoService {
 		try {
 		
 		/* Liberando resposta para portas difetentes que usam api ou clientes web */
-		liberacaoCors(response);
+		liberarCors(response);
 
 		if (token != null) {
 			
@@ -107,33 +110,30 @@ public class JWTTokenAutenticacaoService {
 		}
 		
 		
-		liberacaoCors(response);
 		
 		/* Liberando resposta para porta diferente do projeto Angular */
-		response.addHeader("Access-Control-Allow-Origin", "*");
+		liberarCors(response);
 		return null; // acesso não autorizzado
 	}
-
-	private void liberacaoCors(HttpServletResponse response) {
+ 
+	private void liberarCors(HttpServletResponse response) {
+		if(response.getHeader("Access-Control-Allow-Origin") == null) {
+			response.addHeader("Access-Control-Allow-Origin", "*");
+		}
 		
-		if(response.getHeader("Acess-Control-Allow-Origin") == null) {
-			response.addHeader("Acess-Control-Allow-Origin", "*");
-		}
-			
-			if(response.getHeader("Acess-Control-Allow-Headers") == null){
-				response.addHeader("Acess-Control-Allow-Headers", "*");
-		}
-			if(response.getHeader("Acess-Control-Request-Headers") == null){
-				response.addHeader("Acess-Control-Request-Headers", "*");
-		}
-			
-			if(response.getHeader("Acess-Control-Allow-Methods") == null) {
-				response.addHeader("Acess-Control-Allow-Methods", "*");
-			}
-			
-			
-		
+		if(response.getHeader("Acess-Control-Allow-Headers") == null){
+			response.addHeader("Acess-Control-Allow-Headers", "*");
 	}
+		if(response.getHeader("Acess-Control-Request-Headers") == null){
+			response.addHeader("Acess-Control-Request-Headers", "*");
+	}
+		
+		if(response.getHeader("Acess-Control-Allow-Methods") == null) {
+			response.addHeader("Acess-Control-Allow-Methods", "*");
+		}
+	}
+
+	
 	
 
 }
