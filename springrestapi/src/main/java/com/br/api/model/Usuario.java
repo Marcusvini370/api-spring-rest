@@ -21,6 +21,7 @@ import javax.persistence.UniqueConstraint;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.validation.annotation.Validated;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -48,6 +49,7 @@ public class Usuario implements UserDetails {
 	
 	private String nome;
 	
+	
 	private String cpf;
 	
 	private String cep;
@@ -69,7 +71,7 @@ public class Usuario implements UserDetails {
 	
 	inverseJoinColumns = @JoinColumn (name = "role_id", referencedColumnName = "id", table = "role", unique = false, updatable =false,
 	foreignKey = @ForeignKey (name = "role_fk",value = ConstraintMode.CONSTRAINT )))
-	private List<Role> roles; /* Papeis ou acessos */ 
+	private List<Role> roles = new ArrayList<Role>(); /* Papeis ou acessos */ 
 	
 	private String token = "";
 

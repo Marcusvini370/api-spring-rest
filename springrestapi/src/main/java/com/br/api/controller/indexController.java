@@ -82,6 +82,8 @@ public class indexController {
 			usuario.getTelefones().get(pos).setUsuario(usuario); // vai amarrar os telefones aos usuários pertencentes
 		}
 		
+		
+		/*
 		// Consumindo API publica externa do cep
 		
 		URL url  = new URL("https://viacep.com.br/ws/"+usuario.getCep()+"/json/");
@@ -105,7 +107,7 @@ public class indexController {
 			usuario.setBairro(userAux.getBairro());
 			usuario.setLocalidade(userAux.getLocalidade());
 			usuario.setUf(userAux.getUf());
-			usuario.setDdd(userAux.getDdd());
+			usuario.setDdd(userAux.getDdd());*/
 			
 		
 		// Consumindo API publica externa
@@ -127,7 +129,7 @@ public class indexController {
 	     	   usuario.getTelefones().get(pos).setUsuario(usuario); 
 	        }
 		
-		Usuario userTemporario = usuarioRepository.findUserByLogin(usuario.getLogin());
+		Usuario userTemporario = usuarioRepository.findById(usuario.getId()).get();
 		
 		//senhas diferente
 		if(!userTemporario.getPassword().equals(usuario.getPassword())) {
