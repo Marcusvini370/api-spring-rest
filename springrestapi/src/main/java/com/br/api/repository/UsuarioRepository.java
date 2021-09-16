@@ -1,5 +1,7 @@
 package com.br.api.repository;
 
+import java.util.List;
+
 import org.springframework.data.jdbc.repository.query.Query;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.repository.CrudRepository;
@@ -19,5 +21,8 @@ public interface UsuarioRepository extends CrudRepository<Usuario, Long> {
 	@Modifying
 	@org.springframework.data.jpa.repository.Query(nativeQuery = true, value ="update usuario set token = ?1 where login = ?2")
 	void atualizaTokenUser(String token, String login);
+	
+	@Query("select u from Usuario u where u.nome like %?1%")
+	List<Usuario> findUserByNome(String nome);
 
 }

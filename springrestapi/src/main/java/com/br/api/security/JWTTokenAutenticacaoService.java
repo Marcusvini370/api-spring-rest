@@ -116,21 +116,26 @@ public class JWTTokenAutenticacaoService {
 		return null; // acesso não autorizzado
 	}
  
-	private void liberarCors(HttpServletResponse response) {
+	private void liberarCors(HttpServletResponse response) { 
+		
 		if(response.getHeader("Access-Control-Allow-Origin") == null) {
+			//liberando a resposta e requisição da api pro usuario
 			response.addHeader("Access-Control-Allow-Origin", "*");
 		}
 		
-		if(response.getHeader("Acess-Control-Allow-Headers") == null){
-			response.addHeader("Acess-Control-Allow-Headers", "*");
-	}
-		if(response.getHeader("Acess-Control-Request-Headers") == null){
-			response.addHeader("Acess-Control-Request-Headers", "*");
-	}
-		
-		if(response.getHeader("Acess-Control-Allow-Methods") == null) {
-			response.addHeader("Acess-Control-Allow-Methods", "*");
+		if(response.getHeader("Access-Control-Allow-Headers") == null) {
+			
+			response.addHeader("Access-Control-Allow-Headers", "*");
 		}
+		
+		if(response.getHeader("Access-Contro-Request-Headers") == null) {
+			response.addHeader("Access-Contro-Request-Headers", "*");
+		}
+		
+		if(response.getHeader("Access-Control-Allow-Methods") == null) {
+			response.addHeader("Access-Control-Allow-Methods", "*");
+			
+		} 
 	}
 
 	

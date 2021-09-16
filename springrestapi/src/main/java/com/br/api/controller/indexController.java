@@ -64,6 +64,16 @@ public class indexController {
 			
 		return new ResponseEntity<List<Usuario>>(list, HttpStatus.OK);
 	}
+	
+	/* END-POINT consulta de usuário por nome */
+	@GetMapping(value = "/usuarioPorNome/{nome}")
+	public ResponseEntity<List<Usuario>> usuarioPorNome(@PathVariable("nome") String nome) {
+
+		List<Usuario> list =  (List<Usuario>) usuarioRepository.findUserByNome(nome);
+			
+		return new ResponseEntity<List<Usuario>>(list, HttpStatus.OK);
+	}
+
 
 	@PostMapping(value = "/")
 	public ResponseEntity<Usuario> cadastrar(@RequestBody Usuario usuario) throws Exception {
