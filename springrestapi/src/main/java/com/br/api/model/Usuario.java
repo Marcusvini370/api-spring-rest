@@ -14,14 +14,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
+
 import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotBlank;
 
+import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.validation.annotation.Validated;
+
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -49,7 +51,8 @@ public class Usuario implements UserDetails {
 	
 	private String nome;
 	
-	
+
+	@CPF(message = "Cpf inválido")
 	private String cpf;
 	
 	private String cep;

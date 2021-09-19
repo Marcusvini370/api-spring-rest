@@ -9,6 +9,8 @@ import java.net.URLConnection;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -16,6 +18,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.br.api.model.Usuario;
 import com.br.api.model.UsuarioDTO;
 import com.br.api.repository.UsuarioRepository;
+import com.br.api.service.ImplementacaoUserDetailsService;
 import com.google.gson.Gson;
 
 
@@ -39,6 +43,9 @@ public class indexController {
 
 	@Autowired // se fosse CDI seria @Inject
 	private UsuarioRepository usuarioRepository;
+	
+	
+	private ImplementacaoUserDetailsService implementacaoUserDetailsService;
 	
 	
 	
@@ -74,9 +81,9 @@ public class indexController {
 		return new ResponseEntity<List<Usuario>>(list, HttpStatus.OK);
 	}
 
-
+ 
 	@PostMapping(value = "/")
-	public ResponseEntity<Usuario> cadastrar(@RequestBody Usuario usuario) throws Exception {
+	public ResponseEntity<Usuario> cadastrar(@Validated @RequestBody Usuario usuario) throws Exception {
 		
 		for(int pos = 0; pos < usuario.getTelefones().size(); pos ++ ) {
 			usuario.getTelefones().get(pos).setUsuario(usuario); // vai amarrar os telefones aos usuários pertencentes
@@ -116,6 +123,8 @@ public class indexController {
 		usuario.setSenha(senhacriptografada);
 		Usuario usuarioSalvo = usuarioRepository.save(usuario);
 
+		implementacaoUserDetailsService.insereAcessoPadrao(usuarioSalvo.getId());
+		
 		return new ResponseEntity<Usuario>(usuarioSalvo, HttpStatus.OK);
 	}
 

@@ -1,6 +1,7 @@
 package com.br.api.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,6 +17,8 @@ public class ImplementacaoUserDetailsService implements UserDetailsService {
 	@Autowired // injeção de dependencias
 	private UsuarioRepository usuarioRepository;
 	
+	private JdbcTemplate jdbcTemplate;
+	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
@@ -28,6 +31,22 @@ public class ImplementacaoUserDetailsService implements UserDetailsService {
 		}
 		
 		return new User(usuario.getLogin(), usuario.getPassword(), usuario.getAuthorities()); 
+	}
+
+	public void insereAcessoPadrao(Long id) {
+		
+		//descobri qual é a constraint de restrição
+				String constraint  = usuarioRepository.consultarConstraintRole(); //busca o nome da constrait
+				
+				if(constraint != null) { //se ela realmente desistir vai dar o comando de remover ela no banco
+				
+				//remove a constraint com nome que foi pego na consulta
+				jdbcTemplate.execute("alter table usuarios_role DROP CONSTRAINT " + constraint);
+				
+				//insere os acesso padrão
+				usuarioRepository.insereAcessoRolePadrao(id);
+				}
+		
 	}
 
 }
