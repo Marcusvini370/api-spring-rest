@@ -1,6 +1,7 @@
 package com.br.api;
 
 import java.sql.SQLException;
+import java.time.OffsetDateTime;
 import java.util.List;
 
 import org.hibernate.exception.ConstraintViolationException;
@@ -48,10 +49,10 @@ public class ControleExcecoes extends ResponseEntityExceptionHandler {
 			}
 			
 			ObjetoErro objetoErro = new ObjetoErro();
-			objetoErro.setTitulo("Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente");
 			objetoErro.setError(msg);
 			objetoErro.setCode(status.value() + " ==> " + status.getReasonPhrase());
-			
+			objetoErro.setDataHora(OffsetDateTime.now()); //na hora que ocorreu 
+			objetoErro.setTitulo("Um ou mais campos estão inválidos. Faça o preenchimento corretamente e tente novamente");
 			
 			return new 	ResponseEntity<Object>(objetoErro, headers, status);
 		}
@@ -72,6 +73,7 @@ public class ControleExcecoes extends ResponseEntityExceptionHandler {
 			else if(ex instanceof SQLException) {
 				msg = ((SQLException) ex).getCause().getCause().getMessage();
 			}
+			
 			else {
 				msg = ex.getMessage();
 			}

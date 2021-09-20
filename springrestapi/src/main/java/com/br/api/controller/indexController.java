@@ -1,20 +1,12 @@
 package com.br.api.controller;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.List;
 import java.util.Optional;
 
-import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -32,7 +24,6 @@ import com.br.api.model.Usuario;
 import com.br.api.model.UsuarioDTO;
 import com.br.api.repository.UsuarioRepository;
 import com.br.api.service.ImplementacaoUserDetailsService;
-import com.google.gson.Gson;
 
 
 
@@ -44,7 +35,7 @@ public class indexController {
 	@Autowired // se fosse CDI seria @Inject
 	private UsuarioRepository usuarioRepository;
 	
-	
+	@Autowired
 	private ImplementacaoUserDetailsService implementacaoUserDetailsService;
 	
 	
