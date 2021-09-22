@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.br.api.model.Usuario;
 import com.br.api.model.UsuarioDTO;
+import com.br.api.repository.TelefoneRepository;
 import com.br.api.repository.UsuarioRepository;
 import com.br.api.service.ImplementacaoUserDetailsService;
 
@@ -37,6 +38,9 @@ public class indexController {
 	
 	@Autowired
 	private ImplementacaoUserDetailsService implementacaoUserDetailsService;
+	
+	@Autowired
+	private TelefoneRepository telefoneRepository;
 	
 	
 	
@@ -151,6 +155,14 @@ public class indexController {
 
 		return ResponseEntity.noContent().build();
 
+	}
+	
+	@DeleteMapping(value = "/removerTelefone/{id}")
+	public String deleteTelefone(@PathVariable("id") Long id) {
+		telefoneRepository.deleteById(id);
+		
+		return "ok";
+		
 	}
 	
 	
