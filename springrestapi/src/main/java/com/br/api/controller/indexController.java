@@ -1,12 +1,14 @@
 package com.br.api.controller;
 
-import java.util.List;
 import java.util.Optional;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -57,23 +59,21 @@ public class indexController {
 
 	/* Vamos supor que o carregamento de usuário seja um processo lento e 
 	  queremos controlar ele com cache para agilizar o processo  */
-	@GetMapping(value = "/")
+	@GetMapping(value = "/page/{pagina}")
 	@CacheEvict(value = "cacheusuarios" , allEntries = true)  // se tiver cache que não é usado vai remover
 	@CachePut(value = "cacheputusuarios") // se tem mudanças ou dados novos no banco, vai trazer para o cache
-	public ResponseEntity<List<Usuario>> usuario() throws InterruptedException {
+	public ResponseEntity<Page<Usuario>> usuarioPagina(@PathVariable("pagina") int pagina) throws InterruptedException {
 
-		List<Usuario> list = (List<Usuario>) usuarioRepository.findAll();
-			
-		return new ResponseEntity<List<Usuario>>(list, HttpStatus.OK);
-	}
-	
-	/* END-POINT consulta de usuário por nome */
-	@GetMapping(value = "/usuarioPorNome/{nome}")
-	public ResponseEntity<List<Usuario>> usuarioPorNome(@PathVariable("nome") String nome) {
-
-		List<Usuario> list =  (List<Usuario>) usuarioRepository.findUserByNome(nome);
-			
-		return new ResponseEntity<List<Usuario>>(list, HttpStatus.OK);
+		//paginação de 5 em 5 ordenado por nome, passa a página como parametro que recebe as posição da pagina
+		//de acordo com oque agente clica
+		PageRequest page = PageRequest.of(pagina, 5, Sort.by("nome"));
+		
+		//find all retorna uma implementação de página ai passamos nosso page configurado
+		Page<Usuario> usuarios = usuarioRepository.findAll(page);
+		
+         //vai retorna uma página configurada do tipo usuários na lista
+		return new ResponseEntity<Page<Usuario>>(usuarios, HttpStatus.OK);
+		
 	}
 
  

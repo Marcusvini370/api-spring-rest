@@ -119,7 +119,7 @@ public class JWTTokenAutenticacaoService {
 
 		if (response.getHeader("Access-Control-Allow-Headers") == null) {
 
-			response.addHeader("Access-Control-Allow-Headers", "*");
+			response.addHeader("Access-Control-Allow-Headers", "Authorization, *");
 		}
 
 		if (response.getHeader("Access-Contro-Request-Headers") == null) {
@@ -131,5 +131,6 @@ public class JWTTokenAutenticacaoService {
 
 		}
 	}
+	
 
 }
