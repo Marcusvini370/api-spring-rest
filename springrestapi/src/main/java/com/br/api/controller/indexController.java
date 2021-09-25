@@ -56,9 +56,24 @@ public class indexController {
 		return new ResponseEntity<UsuarioDTO>(new UsuarioDTO(usuario.get()), HttpStatus.OK);
 	}
 	
+	@GetMapping()
+	@CacheEvict(value="listausers" ,allEntries = true )  
+	@CachePut("listausers")
+	public ResponseEntity<Page<Usuario>> listarTodos() throws InterruptedException {
 
-	/* Vamos supor que o carregamento de usuário seja um processo lento e 
-	  queremos controlar ele com cache para agilizar o processo  */
+		//paginação de 5 em 5 ordenado por nome
+		PageRequest page = PageRequest.of(0, 5, Sort.by("nome"));
+		
+		//find all retorna uma implementação de página ai passamos nosso page configurado
+		Page<Usuario> list = usuarioRepository.findAll(page);
+		
+         //vai retorna uma página configurada do tipo usuários na lista
+		return new ResponseEntity<Page<Usuario>>(list, HttpStatus.OK);
+		
+	} 
+	
+
+	
 	@GetMapping(value = "/page/{pagina}")
 	@CacheEvict(value = "cacheusuarios" , allEntries = true)  // se tiver cache que não é usado vai remover
 	@CachePut(value = "cacheputusuarios") // se tem mudanças ou dados novos no banco, vai trazer para o cache
@@ -155,6 +170,55 @@ public class indexController {
 
 		return ResponseEntity.noContent().build();
 
+	}
+	
+	//END-POINT 
+		@GetMapping(value = "/usuarioPorNome/{nome}", produces = "application/json")
+		public ResponseEntity<Page<Usuario>> usuarioPorNome (@PathVariable("nome") String nome) throws InterruptedException{
+			
+			PageRequest pageRequest = null;
+			Page<Usuario> list = null;
+			
+			if (nome == null || (nome != null && nome.trim().isEmpty()) || nome.equalsIgnoreCase("undefined")) {
+				pageRequest = PageRequest.of(0, 5, Sort.by("nome"));
+				list = usuarioRepository.findAll(pageRequest);
+			} else {
+				pageRequest = PageRequest.of(0, 5, Sort.by("nome"));
+				list = usuarioRepository.findUserByNamePage(nome, pageRequest);
+			}
+							
+			return new ResponseEntity<Page<Usuario>>(list, HttpStatus.OK);
+			
+		}
+	
+	/* END-POINT de consultar de usuário por nome */
+	@GetMapping("/usuarioPorNome/{nome}/page/{page}")
+	@CacheEvict(value="listanome" ,allEntries = true )  
+	@CachePut("listanome")
+	public ResponseEntity<Page<Usuario>> buscarPorNomePage(@PathVariable("nome") String nome,
+			@PathVariable("page") int page) throws InterruptedException {
+			
+		
+		PageRequest pageRequest  = null;
+		Page<Usuario> list = null;
+				
+		/* não informou o nome e deixou vazio o campo de pesquisa, continua na paginação*/
+		if(nome == null || (nome != null && nome.trim().isEmpty())
+			|| nome.equalsIgnoreCase("undefined")) {
+			
+			pageRequest = PageRequest.of(page, 5, Sort.by("nome"));
+			 list = usuarioRepository.findAll(pageRequest);
+		
+			/*Informou o nome e faz o método de consulta por paginação*/
+		}else {
+			pageRequest = PageRequest.of(page, 5, Sort.by("nome"));
+			list = usuarioRepository.findUserByNamePage(nome, pageRequest);
+			
+		}		
+		//método de consulta sem paginação
+		//List<Usuario> list = usuarioRepository.findByNome(nome.trim().toUpperCase());
+		
+		return new ResponseEntity<Page<Usuario>>(list, HttpStatus.OK);
 	}
 	
 	@DeleteMapping(value = "/removerTelefone/{id}")
