@@ -15,14 +15,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
-import javax.validation.constraints.NotBlank;
-
 import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
@@ -68,13 +66,32 @@ public class Usuario implements UserDetails {
 	private String uf;
 	private String ddd;
 	
-	@JsonFormat(pattern = "dd/MM/yyyy")
+	@JsonFormat(timezone = "GMT-3", pattern = "dd/MM/yyyy")
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(iso = ISO.DATE, pattern = "dd/MM/yyyy")
 	private Date dataNascimento;
 	
+	
+	
 	@OneToMany(mappedBy = "usuario", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<Telefone> telefones = new ArrayList<Telefone>();
+	
+	
+	
+	
+	@ManyToOne
+	private Profissao profissao; 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	@OneToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "usuarios_role", uniqueConstraints = @UniqueConstraint (

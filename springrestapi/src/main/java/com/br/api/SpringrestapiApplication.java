@@ -33,7 +33,7 @@ public class SpringrestapiApplication implements WebMvcConfigurer {
 
 		registry.addMapping("/usuario/**").
 		allowedMethods("*")
-		.allowedOrigins("*");
+		.allowedOrigins("**");
 		/* Liberando o mapeamento de usuário para todas origens */
 	}
 
