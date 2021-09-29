@@ -44,7 +44,4 @@ public class ServiceRelatorio implements Serializable {
 		
 		return retorno; //ai pega e retorna certinho o nosso pdf e fecha  a conexão q foi usada pelo relatorio
 	}
-	
-	
-
 }

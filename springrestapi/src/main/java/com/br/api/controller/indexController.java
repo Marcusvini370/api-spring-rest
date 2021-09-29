@@ -1,8 +1,11 @@
 package com.br.api.controller;
 
+import java.util.HashMap;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
 
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -27,6 +30,7 @@ import com.br.api.model.UsuarioDTO;
 import com.br.api.repository.TelefoneRepository;
 import com.br.api.repository.UsuarioRepository;
 import com.br.api.service.ImplementacaoUserDetailsService;
+import com.br.api.service.ServiceRelatorio;
 
 
 
@@ -43,6 +47,9 @@ public class indexController {
 	
 	@Autowired
 	private TelefoneRepository telefoneRepository;
+	
+	@Autowired
+	private ServiceRelatorio serviceRelatorio;
 	
 	
 	
@@ -241,6 +248,18 @@ public class indexController {
 		return "ok";
 		
 	}
-	
-	
+	/*Endpoint Relatório - dowload*/
+	@GetMapping("/relatorio") //obter um relatório
+	public ResponseEntity<String> dowloadRelatorio(HttpServletRequest request) throws Exception {
+		
+		/*nome dinâmico do relatorio que queremos , getServletContext pra carregar onde ele está contexto*/
+		byte[] pdf = serviceRelatorio.gerarRelatorio("relatorio-usuario", new HashMap(),
+				request.getServletContext());
+		
+		/*base 63 que fica pronta para ser impressa e processadaem qlq lugar*/
+		String base64Pdf = "data:application/pdf;base64," + Base64.encodeBase64String(pdf);
+		
+		return new ResponseEntity<String>(base64Pdf,HttpStatus.OK);
+		
+	}
 }
