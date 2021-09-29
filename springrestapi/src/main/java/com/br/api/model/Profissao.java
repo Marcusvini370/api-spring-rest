@@ -23,4 +23,5 @@ public class Profissao implements Serializable {
 	
 	private String descricao;
 	
+	
 }

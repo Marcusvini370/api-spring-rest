@@ -47,13 +47,26 @@ public class indexController {
 	
 	
 	/* Serviço RESTfull */
-	@GetMapping(value = "/{id}") // Lista usuário por id
+	@GetMapping(value = "/id/{id}") // Lista usuário por id
 	@CacheEvict(value = "cacheuser" , allEntries = true)  // se tiver cache que não é usado vai remover
 	@CachePut(value = "cacheputuser") // se tem mudanças ou dados novos no banco, vai trazer para o cache
 	public ResponseEntity<UsuarioDTO> initV1(@PathVariable(value = "id") Long id) {
 
 		Optional<Usuario> usuario = usuarioRepository.findById(id);
 		return new ResponseEntity<UsuarioDTO>(new UsuarioDTO(usuario.get()), HttpStatus.OK);
+	}
+	
+/*               Métodos de Get buscar por id             */
+	
+	@GetMapping(value = "/{id}", produces = "application/json")
+	@CacheEvict(value="buscarusers" ,allEntries = true )  
+	@CachePut("buscarusers")
+	public ResponseEntity<Usuario> buscarPorId(@PathVariable Long id) {
+
+		// vai retorna a pessoa se der certo retorna um status ok , se n encontrar dá um
+		// notofund
+		return usuarioRepository.findById(id).map(ResponseEntity::ok)
+				.orElse(ResponseEntity.notFound().build());
 	}
 	
 	@GetMapping()

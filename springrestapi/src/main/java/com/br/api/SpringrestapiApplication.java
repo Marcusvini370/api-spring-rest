@@ -30,11 +30,22 @@ public class SpringrestapiApplication implements WebMvcConfigurer {
 
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
-
+		
+		/* Liberando o mapeamento de usuário para todas origens */
 		registry.addMapping("/usuario/**").
 		allowedMethods("*")
-		.allowedOrigins("**");
-		/* Liberando o mapeamento de usuário para todas origens */
+		.allowedOrigins("*");
+		
+		registry.addMapping("/profissao/**").
+		allowedMethods("*")
+		.allowedOrigins("*");
+		
+		registry.addMapping("/recuperar/**").
+		allowedMethods("*")
+		.allowedOrigins("*");
+		
+		
+		
 	}
 
 }

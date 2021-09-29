@@ -1,5 +1,6 @@
 package com.br.api.model;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -77,7 +78,8 @@ public class Usuario implements UserDetails {
 	private List<Telefone> telefones = new ArrayList<Telefone>();
 	
 	
-	
+	private BigDecimal salario;
+
 	
 	@ManyToOne
 	private Profissao profissao; 
@@ -85,13 +87,7 @@ public class Usuario implements UserDetails {
 	
 	
 	
-	
-	
-	
-	
-	
-	
-	
+
 	
 	@OneToMany(fetch = FetchType.EAGER)
 	@JoinTable(name = "usuarios_role", uniqueConstraints = @UniqueConstraint (

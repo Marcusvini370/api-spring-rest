@@ -34,6 +34,11 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
 			+ "<> 'unique_role_user';", nativeQuery = true ) //nativequery = sql puro
      String consultarConstraintRole();
 	
+	@Transactional
+	@Modifying
+	@Query(value= " update usuario set senha = ?1 where id = ?2", nativeQuery = true)
+	void updateSenha(String senha, Long codUser);
+	
 	
 	@Modifying
 	@Query(nativeQuery = true, value =" insert into usuarios_role (usuario_id, role_id) values(?1, (select id from role where nome_role = 'ROLE_USER'));")

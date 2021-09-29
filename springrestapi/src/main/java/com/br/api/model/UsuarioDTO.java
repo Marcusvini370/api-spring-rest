@@ -1,6 +1,7 @@
 package com.br.api.model;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,20 +18,24 @@ public class UsuarioDTO  implements Serializable {
 	private String userLogin;
 	private String userNome;
 	private String userCpf;
-	private String senha;
-	private Long id;
-	private Date dataNascimento;
+	private String userSenha;
+	private Long userId;
+	private Date userDataNascimento;
+	private BigDecimal userSalario;
 	
 	private List<Telefone> telefones = new ArrayList<Telefone>();
+	private Profissao profissao;
 	
 	public UsuarioDTO(Usuario usuario) {
 		this.userLogin = usuario.getLogin();
 		this.userNome = usuario.getNome();
-		this.dataNascimento = usuario.getDataNascimento();
+		this.userDataNascimento = usuario.getDataNascimento();
 		this.userCpf = usuario.getCpf();
-		this.id = usuario.getId();
-		this.senha = usuario.getSenha();
+		this.userId = usuario.getId();
+		this.userSenha = usuario.getSenha();
 		this.telefones = usuario.getTelefones();
+	    this.userSalario = usuario.getSalario();
+	    this.profissao = usuario.getProfissao();
 	}
 
 }

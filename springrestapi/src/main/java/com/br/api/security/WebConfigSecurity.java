@@ -33,7 +33,7 @@ public class WebConfigSecurity extends WebSecurityConfigurerAdapter{
 			
 			// Ativando a restrição para a página inicial do sistema
 			.disable().authorizeRequests().antMatchers("/").permitAll()
-			.antMatchers("/index").permitAll()
+			.antMatchers("/index", "/recuperar/**").permitAll()
 			
 			.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 			
