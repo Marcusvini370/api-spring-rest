@@ -2,6 +2,7 @@ package com.br.api.controller;
 
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -16,6 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.br.api.model.UserChart;
 import com.br.api.model.UserReport;
 import com.br.api.model.Usuario;
 import com.br.api.model.UsuarioDTO;
@@ -53,6 +56,9 @@ public class indexController {
 	
 	@Autowired
 	private ServiceRelatorio serviceRelatorio;
+	
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 	
 	
 	
@@ -296,4 +302,27 @@ public class indexController {
 		return new ResponseEntity<String>(base64Pdf,HttpStatus.OK);
 		
 	}
+	
+	@GetMapping(value="/grafico")
+	public ResponseEntity<UserChart> grafico(){
+		
+		UserChart userChart = new UserChart();
+		
+	List<String> resultado =	jdbcTemplate.queryForList("select array_agg('''' || nome || '''') from usuario where salario > 0 and nome <> '' union all "
+				+ "select cast(array_agg('''' || salario || '''') as character varying[]) from usuario where salario > 0 and nome <> '';", String.class);
+		
+		if(!resultado.isEmpty()) {
+			String nomes = resultado.get(0).replaceAll("\\{", "").replaceAll("\\}", "");
+			String salario = resultado.get(0).replaceAll("\\{", "").replaceAll("\\}", "");
+			
+			userChart.setSalario(salario);
+			userChart.setNome(nomes);
+		}
+	
+	
+		return new ResponseEntity<UserChart>(userChart, HttpStatus.OK);
+		
+	}
+	
+	
 }
