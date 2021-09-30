@@ -1,6 +1,8 @@
 package com.br.api.controller;
 
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.br.api.model.UserReport;
 import com.br.api.model.Usuario;
 import com.br.api.model.UsuarioDTO;
 import com.br.api.repository.TelefoneRepository;
@@ -255,6 +258,37 @@ public class indexController {
 		/*nome dinâmico do relatorio que queremos , getServletContext pra carregar onde ele está contexto*/
 		byte[] pdf = serviceRelatorio.gerarRelatorio("relatorio-usuario", new HashMap(),
 				request.getServletContext());
+		
+		/*base 63 que fica pronta para ser impressa e processadaem qlq lugar*/
+		String base64Pdf = "data:application/pdf;base64," + Base64.encodeBase64String(pdf);
+		
+		return new ResponseEntity<String>(base64Pdf,HttpStatus.OK);
+		
+	}
+	
+	/* Endpoint Relatório com parametro */
+	@PostMapping("/relatorio/") //obter um relatório
+	public ResponseEntity<String> dowloadRelatorioParam(HttpServletRequest request, @RequestBody UserReport userReport) throws Exception {
+		
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); /*Formato que está vindo da tela */
+		
+		SimpleDateFormat dateFormatParam = new SimpleDateFormat("yyyy/MM/dd"); /* Converter para Formmato do parametro do jasper */
+		
+		/*Faz a formatação da data*/
+		String dataInicio = dateFormatParam.format(dateFormat.parse(userReport.getDataInicio()));
+		
+		String dataFim = dateFormatParam.format(dateFormat.parse(userReport.getDataFim()));
+		
+		Map<String, Object> params = new HashMap<String, Object>();
+				
+				/*parametros do relátorio passando as data que veio pelo usuário*/
+				params.put("DATA_INICIO", dataInicio); 
+				params.put("DATA_FIM", dataFim);
+		
+		
+		/*nome dinâmico do relatorio que queremos , getServletContext pra carregar onde ele está contexto*/
+				byte[] pdf = serviceRelatorio.gerarRelatorio("relatorio-usuario-param", params,
+						request.getServletContext());
 		
 		/*base 63 que fica pronta para ser impressa e processadaem qlq lugar*/
 		String base64Pdf = "data:application/pdf;base64," + Base64.encodeBase64String(pdf);
