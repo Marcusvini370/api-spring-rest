@@ -1,5 +1,10 @@
 package com.br.api.controller;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -9,12 +14,15 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.tomcat.util.codec.binary.Base64;
+import org.apache.tomcat.util.http.parser.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -28,6 +36,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import com.br.api.model.UserChart;
 import com.br.api.model.UserReport;
@@ -37,6 +46,9 @@ import com.br.api.repository.TelefoneRepository;
 import com.br.api.repository.UsuarioRepository;
 import com.br.api.service.ImplementacaoUserDetailsService;
 import com.br.api.service.ServiceRelatorio;
+import com.google.gson.Gson;
+
+
 
 
 
@@ -153,10 +165,10 @@ public class indexController {
 			usuario.setBairro(userAux.getBairro());
 			usuario.setLocalidade(userAux.getLocalidade());
 			usuario.setUf(userAux.getUf());
-			usuario.setDdd(userAux.getDdd());*/
+			
 			
 		
-		// Consumindo API publica externa
+		// Consumindo API publica externa */
 		
 		String senhacriptografada = new BCryptPasswordEncoder().encode(usuario.getSenha());
 		usuario.setSenha(senhacriptografada);
@@ -292,7 +304,7 @@ public class indexController {
 				params.put("DATA_FIM", dataFim);
 		
 		
-		/*nome dinâmico do relatorio que queremos , getServletContext pra carregar onde ele está contexto*/
+		/*nome dinâmico do relatorio que queremos , getServletContext pra carregar onde ele está contexto*/ 
 				byte[] pdf = serviceRelatorio.gerarRelatorio("relatorio-usuario-param", params,
 						request.getServletContext());
 		
@@ -308,14 +320,17 @@ public class indexController {
 		
 		UserChart userChart = new UserChart();
 		
-	List<String> resultado =	jdbcTemplate.queryForList("select array_agg('''' || nome || '''') from usuario where salario > 0 and nome <> '' union all "
-				+ "select cast(array_agg('''' || salario || '''') as character varying[]) from usuario where salario > 0 and nome <> '';", String.class);
+		/*Retorna duas lista 1 lista dos nome 2 lista com os salários */
+
+	List<String> resultado =	jdbcTemplate.queryForList("select array_agg(nome) from usuario where salario > 0 and nome <> '' union all "
+				+ "select cast(array_agg(salario) as character varying[]) from usuario where salario > 0 and nome <> '';", String.class);
 		
 		if(!resultado.isEmpty()) {
+			/*vai remover as chaves por vázios pq temos que ter uma array n um objeto na posição 0*/
 			String nomes = resultado.get(0).replaceAll("\\{", "").replaceAll("\\}", "");
-			String salario = resultado.get(0).replaceAll("\\{", "").replaceAll("\\}", "");
+			String salario = resultado.get(1).replaceAll("\\{", "").replaceAll("\\}", "");
 			
-			userChart.setSalario(salario);
+			userChart.setSalario(salario); 
 			userChart.setNome(nomes);
 		}
 	
@@ -323,6 +338,7 @@ public class indexController {
 		return new ResponseEntity<UserChart>(userChart, HttpStatus.OK);
 		
 	}
+
 	
 	
 }

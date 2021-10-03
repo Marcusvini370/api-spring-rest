@@ -23,7 +23,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class JWTTokenAutenticacaoService {
 
 	/* Tempo de Validade do Token 2 dias milissegundos */
-	private static final long EXPIRATION_TIME = 172800000;
+	private static final long EXPIRATION_TIME = 172800000 ;
 
 	/* Uma senha única para compo a autenticação */
 	private static final String SECRET = "SenhaExtremamenteSecreta";
@@ -44,11 +44,11 @@ public class JWTTokenAutenticacaoService {
 
 		String token = TOKEN_PREFIX + " " + JWT; /* vai juntar o prefixo com o jwt e gerar o token */
 
-		/* Adiciona no cabeçalho http */
-		response.addHeader(HEADER_STRING, token); /* Authorization : Bearer w87ew87e8w7e8w7e8w7e8w7e8 */
-
 		/* Liberando resposta para porta diferente do projeto Angular */
 		liberarCors(response);
+		
+		/* Adiciona no cabeçalho http */
+		response.addHeader(HEADER_STRING, token); /* Authorization : Bearer w87ew87e8w7e8w7e8w7e8w7e8 */
 
 		ApplicationContextLoad.getApplicationContext().getBean(UsuarioRepository.class).atualizaTokenUser(JWT,
 				username);
@@ -98,9 +98,13 @@ public class JWTTokenAutenticacaoService {
 			} /* Fim condição token */
 
 		} catch (io.jsonwebtoken.ExpiredJwtException e) {
+			
 			try {
+			
 				response.getOutputStream()
 						.println("Seu TOKEN está expirado, faça o login ou informe o novo Token para Autenticação");
+				return null;
+				
 			} catch (IOException e1) {
 			}
 		}
@@ -115,6 +119,7 @@ public class JWTTokenAutenticacaoService {
 		if (response.getHeader("Access-Control-Allow-Origin") == null) {
 			// liberando a resposta e requisição da api pro usuario
 			response.addHeader("Access-Control-Allow-Origin", "*");
+			
 		}
 
 		if (response.getHeader("Access-Control-Allow-Headers") == null) {
@@ -122,8 +127,8 @@ public class JWTTokenAutenticacaoService {
 			response.addHeader("Access-Control-Allow-Headers", "Authorization, *");
 		}
 
-		if (response.getHeader("Access-Contro-Request-Headers") == null) {
-			response.addHeader("Access-Contro-Request-Headers", "*");
+		if (response.getHeader("Access-Control-Request-Headers") == null) {
+			response.addHeader("Access-Control-Request-Headers", "*");
 		}
 
 		if (response.getHeader("Access-Control-Allow-Methods") == null) {

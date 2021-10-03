@@ -22,6 +22,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotBlank;
+
 import org.hibernate.validator.constraints.br.CPF;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
@@ -48,25 +50,30 @@ public class Usuario implements UserDetails {
 	@EqualsAndHashCode.Include
 	private Long id;
 	
+	@NotBlank
 	@Column(unique = true)
 	private String login;
 	
+	@NotBlank
 	private String senha;
 	
+	@NotBlank
 	private String nome;
 	
-
+	@NotBlank
 	@CPF(message = "Cpf inválido")
 	private String cpf;
 	
+	/*
 	private String cep;
 	private String logradouro;
 	private String complemento;
 	private String bairro;
 	private String localidade;
 	private String uf;
-	private String ddd;
+	*/
 	
+
 	@JsonFormat(timezone = "GMT-3", pattern = "dd/MM/yyyy")
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(iso = ISO.DATE, pattern = "dd/MM/yyyy")
@@ -79,10 +86,7 @@ public class Usuario implements UserDetails {
 	
 	
 	private BigDecimal salario;
-
-	
-	@ManyToOne
-	private Profissao profissao; 
+	private String profissao; 
 	
 	
 	
